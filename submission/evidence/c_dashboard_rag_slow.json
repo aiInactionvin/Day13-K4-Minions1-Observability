@@ -1,0 +1,31 @@
+{
+  "scenario": "rag_slow_practice",
+  "load_test": {
+    "requests": 10,
+    "concurrency": 5
+  },
+  "comparison": {
+    "baseline_p95_ms": 155.0,
+    "incident_p95_ms": 2660.0,
+    "p95_multiplier": 17.16,
+    "error_rate_pct": 0.0,
+    "interpretation": "Latency increased sharply while errors, cost, tokens, and quality remained broadly stable."
+  },
+  "slow_request_examples": [
+    {
+      "correlation_id": "req-24b03b90",
+      "latency_ms": 2660.0,
+      "feature": "qa"
+    },
+    {
+      "correlation_id": "req-568f4377",
+      "latency_ms": 2660.0,
+      "feature": "summary"
+    },
+    {
+      "correlation_id": "req-44e23164",
+      "latency_ms": 2660.0,
+      "feature": "qa"
+    }
+  ]
+}

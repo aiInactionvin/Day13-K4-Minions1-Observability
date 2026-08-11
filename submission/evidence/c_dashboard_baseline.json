@@ -1,0 +1,34 @@
+{
+  "scenario": "baseline_warm_cache",
+  "load_test": {
+    "requests": 10,
+    "concurrency": 5
+  },
+  "panels": {
+    "latency_ms": {
+      "p50": 154.0,
+      "p95": 155.0,
+      "p99": 155.0,
+      "threshold_p95_lte": 3000
+    },
+    "traffic": {
+      "request_count": 10,
+      "latest_active_minute": 10.0
+    },
+    "errors": {
+      "error_count": 0,
+      "error_rate_pct": 0.0
+    },
+    "cost": {
+      "total_usd": 0.018984
+    },
+    "tokens": {
+      "tokens_in": 413,
+      "tokens_out": 1183
+    },
+    "quality": {
+      "mean": 0.88
+    }
+  }
+}
+

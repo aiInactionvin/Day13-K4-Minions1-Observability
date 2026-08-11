@@ -31,6 +31,18 @@ python scripts/validate_dashboard.py
 
 Validator kiểm tra cấu trúc contract; nó không thể chứng minh biểu đồ trong ảnh dùng đúng dữ liệu. Evidence runtime vẫn bắt buộc.
 
+## Dashboard local có sẵn trong repo
+
+Repo cung cấp dashboard web đọc trực tiếp `data/logs.jsonl`, không cần cài thêm dependency. Sau khi API và load test đã chạy, mở terminal riêng:
+
+```bash
+uvicorn dashboard.web:app --reload --port 8501
+```
+
+Mở `http://127.0.0.1:8501`. Dashboard tự refresh theo `refresh_seconds`, lọc đúng cửa sổ `time_range_minutes` và hiển thị correlation ID của các request chậm nhất để drill-down incident.
+
+API dữ liệu của dashboard nằm tại `http://127.0.0.1:8501/api/dashboard`; endpoint này hữu ích khi cần kiểm tra phép tổng hợp trước khi chụp evidence.
+
 ## Cách kiểm tra runtime
 
 1. Lưu ảnh baseline và giá trị P95/error/cost hiện tại.
