@@ -1,0 +1,21 @@
+Langfuse challenge traces
+session=k4-challenge-s01 trace_id=f1d5572b7608f60cb3af281fc705d43d latency_s=2.651 url=https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/f1d5572b7608f60cb3af281fc705d43d
+  correlation_id=req-42bb5092 prompt=day13-chat label=production version=2
+  observation name=run type=GENERATION latency=2.651
+  observation name=rag_retrieve type=SPAN latency=2.5
+session=k4-challenge-s02 trace_id=a0aa2d523a3f7ab539b966b0eb8bc51e latency_s=2.651 url=https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/a0aa2d523a3f7ab539b966b0eb8bc51e
+  correlation_id=req-d999af47 prompt=day13-chat label=production version=2
+  observation name=run type=GENERATION latency=2.651
+  observation name=rag_retrieve type=SPAN latency=2.501
+session=k4-challenge-s03 trace_id=75bb62dbd3ff6eaf85136f348d35a957 latency_s=2.651 url=https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/75bb62dbd3ff6eaf85136f348d35a957
+  correlation_id=req-db359a5e prompt=day13-chat label=production version=2
+  observation name=run type=GENERATION latency=2.651
+  observation name=rag_retrieve type=SPAN latency=2.5
+session=k4-challenge-s04 trace_id=37f8c33b5ceed690fd5c774730a29e89 latency_s=2.651 url=https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/37f8c33b5ceed690fd5c774730a29e89
+  correlation_id=req-076fe46d prompt=day13-chat label=production version=2
+  observation name=run type=GENERATION latency=2.651
+  observation name=rag_retrieve type=SPAN latency=2.5
+session=k4-challenge-s05 trace_id=53636ea160e6259182786f326635fbec latency_s=3.565 url=https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/53636ea160e6259182786f326635fbec
+  correlation_id=req-4543c0a8 prompt=day13-chat label=production version=2
+  observation name=rag_retrieve type=SPAN latency=2.5
+  observation name=run type=GENERATION latency=3.565

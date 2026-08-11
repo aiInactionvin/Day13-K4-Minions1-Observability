@@ -13,7 +13,7 @@
 ## 2. Kết quả kỹ thuật
 
 - Điểm `validate_logs.py`: 100/100 (`submission/evidence/a_validate_logs_result.txt`)
-- Tổng số traces: có prompt trace evidence cho baseline/candidate; challenge run trong report này chạy offline-safe, không export thêm trace lên Langfuse.
+- Tổng số traces: có prompt trace evidence cho baseline/candidate và 5 traces challenge thật đã export lên Langfuse (`submission/evidence/langfuse_challenge_traces.txt`).
 - Số PII leak còn lại: 0 theo `validate_logs.py`
 - Link/đường dẫn dashboard:
   - Runtime local: `uvicorn dashboard.web:app --reload --port 8501`
@@ -26,17 +26,17 @@
 - Evidence correlation ID:
   - `submission/evidence/a_runtime_logs_redacted.jsonl`
   - `submission/evidence/challenge_log_lines.jsonl`
-  - Ví dụ challenge: `req-6a38eb35`, `req-2514c703`, `req-b7be57c6`, `req-7a9d31e0`, `req-59ceef29`
+  - Ví dụ challenge: `req-4543c0a8`, `req-42bb5092`, `req-d999af47`, `req-db359a5e`, `req-076fe46d`
 - Evidence PII redaction:
   - `submission/evidence/a_runtime_logs_redacted.jsonl`
   - `validate_logs.py` báo `Potential PII leaks detected: 0`
 - Evidence trace waterfall:
   - Prompt/Langfuse evidence: `submission/evidence/prompt_versions.png`, `submission/evidence/prompt_rollback.png`
-  - Challenge run hiện tại không gửi trace cloud để tránh export dữ liệu khi chưa có phê duyệt rõ ràng cho payload/destination.
+  - Challenge Langfuse traces: `submission/evidence/langfuse_challenge_traces.txt`, `submission/evidence/langfuse_challenge_traces.json`
 - Giải thích một span đáng chú ý:
-  - Khi chạy với Langfuse enabled trên project của Lab Coach, mở trace của request có correlation/session tương ứng, ví dụ session `k4-challenge-s02`, rồi xem waterfall của agent run.
-  - Triệu chứng cần tìm: tổng duration agent tăng khoảng 2.5s trong khi error rate vẫn 0%, cost và tokens không spike.
-  - Nếu có span retrieval/tool riêng, span bất thường sẽ là bước RAG/retrieval; nếu trace hiện chỉ có agent/generation span, dùng correlation ID trong trace metadata để quay lại log `response_sent.latency_ms`.
+  - Trace `53636ea160e6259182786f326635fbec` cho session `k4-challenge-s05` có `run` latency 3.565s và span con `rag_retrieve` latency 2.5s.
+  - Trace `a0aa2d523a3f7ab539b966b0eb8bc51e` cho session `k4-challenge-s02` có `run` latency 2.651s và span con `rag_retrieve` latency 2.501s.
+  - Đây là bằng chứng waterfall cho thấy bottleneck nằm ở retrieval, không phải error hay token/cost spike.
 
 ## 4. Prompt versioning
 
@@ -72,20 +72,23 @@
 - Affected feature: `monitoring`
 - Triệu chứng từ metrics:
   - Baseline P95: 1043ms
-  - Challenge P95: 2650ms
+  - Challenge P95: 3563ms
   - Error rate: 0%
   - Average cost: khoảng $0.002/request
   - Average quality: 0.84
   - Kết luận: latency tăng rõ trong khi error, cost, token và quality không tăng tương ứng.
 - Trace ID liên quan:
-  - Offline-safe run không tạo Langfuse trace mới.
-  - Khi chạy có Langfuse enabled, tìm trace bằng session/correlation ID: `k4-challenge-s02` / `req-6a38eb35`, hoặc các correlation ID bên dưới.
+  - `53636ea160e6259182786f326635fbec` - session `k4-challenge-s05`, correlation ID `req-4543c0a8`, `rag_retrieve` span 2.5s
+  - `f1d5572b7608f60cb3af281fc705d43d` - session `k4-challenge-s01`, correlation ID `req-42bb5092`, `rag_retrieve` span 2.5s
+  - `a0aa2d523a3f7ab539b966b0eb8bc51e` - session `k4-challenge-s02`, correlation ID `req-d999af47`, `rag_retrieve` span 2.501s
+  - `75bb62dbd3ff6eaf85136f348d35a957` - session `k4-challenge-s03`, correlation ID `req-db359a5e`, `rag_retrieve` span 2.5s
+  - `37f8c33b5ceed690fd5c774730a29e89` - session `k4-challenge-s04`, correlation ID `req-076fe46d`, `rag_retrieve` span 2.5s
 - Log line/correlation ID liên quan:
-  - `req-6a38eb35` - `latency_ms=2650`, session `k4-challenge-s02`
-  - `req-2514c703` - `latency_ms=2650`, session `k4-challenge-s01`
-  - `req-b7be57c6` - `latency_ms=2650`, session `k4-challenge-s05`
-  - `req-7a9d31e0` - `latency_ms=2650`, session `k4-challenge-s03`
-  - `req-59ceef29` - `latency_ms=2650`, session `k4-challenge-s04`
+  - `req-4543c0a8` - `latency_ms=3563`, session `k4-challenge-s05`
+  - `req-42bb5092` - `latency_ms=2650`, session `k4-challenge-s01`
+  - `req-d999af47` - `latency_ms=2650`, session `k4-challenge-s02`
+  - `req-db359a5e` - `latency_ms=2650`, session `k4-challenge-s03`
+  - `req-076fe46d` - `latency_ms=2650`, session `k4-challenge-s04`
   - Evidence: `submission/evidence/challenge_log_lines.jsonl`
 - Root cause:
   - Incident `rag_slow` làm bước RAG/retrieval bị delay thêm khoảng 2.5s.
@@ -105,7 +108,7 @@
 2. Chạy API: `uvicorn app.main:app --reload --env-file .env`.
 3. Bật challenge: `python scripts/inject_incident.py`.
 4. Chạy input chính thức: `python scripts/load_test.py --challenge --concurrency 5`.
-5. Trên dashboard, lấy slow correlation ID, ví dụ `req-6a38eb35`.
+5. Trên dashboard, lấy slow correlation ID, ví dụ `req-4543c0a8`.
 6. Trong Langfuse, lọc trace theo metadata/session:
    - `session_id=k4-challenge-s02`
    - tag/metadata feature `monitoring`

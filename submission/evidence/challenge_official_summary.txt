@@ -1,9 +1,9 @@
-Official challenge evidence
+Official challenge evidence exported to Langfuse
 challenge_id=day13-k4-observability-v1 incident=rag_slow affected_feature=monitoring
-baseline_p95_ms=1043 challenge_p95_ms=2650
-challenge_error_rate_pct=0.0 avg_cost_usd=0.002014 avg_quality=0.84
-slow correlation_id=req-6a38eb35 session=k4-challenge-s02 feature=monitoring latency_ms=2650 cost=0.001839 quality=0.9
-slow correlation_id=req-2514c703 session=k4-challenge-s01 feature=monitoring latency_ms=2650 cost=0.002394 quality=0.8
-slow correlation_id=req-b7be57c6 session=k4-challenge-s05 feature=monitoring latency_ms=2650 cost=0.002427 quality=0.8
-slow correlation_id=req-7a9d31e0 session=k4-challenge-s03 feature=monitoring latency_ms=2650 cost=0.001434 quality=0.8
-slow correlation_id=req-59ceef29 session=k4-challenge-s04 feature=monitoring latency_ms=2650 cost=0.001977 quality=0.9
+baseline_p95_ms=1043 challenge_p95_ms=3563
+challenge_error_rate_pct=0.0 avg_cost_usd=0.002341 avg_quality=0.84
+slow correlation_id=req-4543c0a8 session=k4-challenge-s05 feature=monitoring latency_ms=3563 cost=0.002262 quality=0.8
+slow correlation_id=req-42bb5092 session=k4-challenge-s01 feature=monitoring latency_ms=2650 cost=0.002364 quality=0.8
+slow correlation_id=req-d999af47 session=k4-challenge-s02 feature=monitoring latency_ms=2650 cost=0.002139 quality=0.9
+slow correlation_id=req-db359a5e session=k4-challenge-s03 feature=monitoring latency_ms=2650 cost=0.002109 quality=0.8
+slow correlation_id=req-076fe46d session=k4-challenge-s04 feature=monitoring latency_ms=2650 cost=0.002832 quality=0.9

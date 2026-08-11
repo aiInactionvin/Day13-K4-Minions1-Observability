@@ -1,0 +1,282 @@
+[
+  {
+    "session_id": "k4-challenge-s01",
+    "trace_id": "f1d5572b7608f60cb3af281fc705d43d",
+    "trace_url": "https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/f1d5572b7608f60cb3af281fc705d43d",
+    "timestamp": "2026-08-11 09:58:50.889000+00:00",
+    "latency_seconds": 2.651,
+    "total_cost": 0.002364,
+    "metadata": {
+      "prompt_name": "day13-chat",
+      "prompt_label": "production",
+      "prompt_version": 2,
+      "prompt_source": "langfuse",
+      "correlation_id": "req-42bb5092",
+      "doc_count": 1,
+      "query_preview": "Explain why metrics traces and logs work together.",
+      "resourceAttributes": {
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.44.0",
+        "service.instance.id": "cc71537b-49d2-4258-8762-3010cc2cf952",
+        "service.name": "unknown_service"
+      },
+      "scope": {
+        "name": "langfuse-sdk",
+        "version": "3.2.1",
+        "attributes": {
+          "public_key": "pk-lf-aca6382d-5231-4253-b227-6a802f4db05e"
+        }
+      }
+    },
+    "tags": [
+      "claude-sonnet-4-5",
+      "lab",
+      "monitoring"
+    ],
+    "observations": [
+      {
+        "id": "34eea6ebb3e40ffc",
+        "name": "run",
+        "type": "GENERATION",
+        "startTime": "2026-08-11 09:58:50.889000+00:00",
+        "endTime": "2026-08-11 09:58:53.540000+00:00",
+        "latency": 2.651,
+        "model": "claude-sonnet-4-5"
+      },
+      {
+        "id": "7b983bedebf08ffc",
+        "name": "rag_retrieve",
+        "type": "SPAN",
+        "startTime": "2026-08-11 09:58:50.889000+00:00",
+        "endTime": "2026-08-11 09:58:53.389000+00:00",
+        "latency": 2.5,
+        "model": null
+      }
+    ]
+  },
+  {
+    "session_id": "k4-challenge-s02",
+    "trace_id": "a0aa2d523a3f7ab539b966b0eb8bc51e",
+    "trace_url": "https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/a0aa2d523a3f7ab539b966b0eb8bc51e",
+    "timestamp": "2026-08-11 09:58:53.541000+00:00",
+    "latency_seconds": 2.651,
+    "total_cost": 0.002139,
+    "metadata": {
+      "prompt_name": "day13-chat",
+      "prompt_label": "production",
+      "prompt_version": 2,
+      "prompt_source": "langfuse",
+      "correlation_id": "req-d999af47",
+      "doc_count": 1,
+      "query_preview": "How should an engineer investigate tail latency?",
+      "resourceAttributes": {
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.44.0",
+        "service.instance.id": "cc71537b-49d2-4258-8762-3010cc2cf952",
+        "service.name": "unknown_service"
+      },
+      "scope": {
+        "name": "langfuse-sdk",
+        "version": "3.2.1",
+        "attributes": {
+          "public_key": "pk-lf-aca6382d-5231-4253-b227-6a802f4db05e"
+        }
+      }
+    },
+    "tags": [
+      "claude-sonnet-4-5",
+      "lab",
+      "monitoring"
+    ],
+    "observations": [
+      {
+        "id": "7a6e3d01d33b56b2",
+        "name": "run",
+        "type": "GENERATION",
+        "startTime": "2026-08-11 09:58:53.541000+00:00",
+        "endTime": "2026-08-11 09:58:56.192000+00:00",
+        "latency": 2.651,
+        "model": "claude-sonnet-4-5"
+      },
+      {
+        "id": "ad2b2d5056b9cf3d",
+        "name": "rag_retrieve",
+        "type": "SPAN",
+        "startTime": "2026-08-11 09:58:53.541000+00:00",
+        "endTime": "2026-08-11 09:58:56.042000+00:00",
+        "latency": 2.501,
+        "model": null
+      }
+    ]
+  },
+  {
+    "session_id": "k4-challenge-s03",
+    "trace_id": "75bb62dbd3ff6eaf85136f348d35a957",
+    "trace_url": "https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/75bb62dbd3ff6eaf85136f348d35a957",
+    "timestamp": "2026-08-11 09:58:56.194000+00:00",
+    "latency_seconds": 2.651,
+    "total_cost": 0.002109,
+    "metadata": {
+      "prompt_name": "day13-chat",
+      "prompt_label": "production",
+      "prompt_version": 2,
+      "prompt_source": "langfuse",
+      "correlation_id": "req-db359a5e",
+      "doc_count": 1,
+      "query_preview": "Summarize the observability workflow for an AI API.",
+      "resourceAttributes": {
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.44.0",
+        "service.instance.id": "cc71537b-49d2-4258-8762-3010cc2cf952",
+        "service.name": "unknown_service"
+      },
+      "scope": {
+        "name": "langfuse-sdk",
+        "version": "3.2.1",
+        "attributes": {
+          "public_key": "pk-lf-aca6382d-5231-4253-b227-6a802f4db05e"
+        }
+      }
+    },
+    "tags": [
+      "claude-sonnet-4-5",
+      "lab",
+      "monitoring"
+    ],
+    "observations": [
+      {
+        "id": "f35bb571bcc0b9a9",
+        "name": "run",
+        "type": "GENERATION",
+        "startTime": "2026-08-11 09:58:56.194000+00:00",
+        "endTime": "2026-08-11 09:58:58.845000+00:00",
+        "latency": 2.651,
+        "model": "claude-sonnet-4-5"
+      },
+      {
+        "id": "8b50de3dea4300bf",
+        "name": "rag_retrieve",
+        "type": "SPAN",
+        "startTime": "2026-08-11 09:58:56.194000+00:00",
+        "endTime": "2026-08-11 09:58:58.694000+00:00",
+        "latency": 2.5,
+        "model": null
+      }
+    ]
+  },
+  {
+    "session_id": "k4-challenge-s04",
+    "trace_id": "37f8c33b5ceed690fd5c774730a29e89",
+    "trace_url": "https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/37f8c33b5ceed690fd5c774730a29e89",
+    "timestamp": "2026-08-11 09:58:58.848000+00:00",
+    "latency_seconds": 2.651,
+    "total_cost": 0.002832,
+    "metadata": {
+      "prompt_name": "day13-chat",
+      "prompt_label": "production",
+      "prompt_version": 2,
+      "prompt_source": "langfuse",
+      "correlation_id": "req-076fe46d",
+      "doc_count": 1,
+      "query_preview": "Which signal should be checked after latency increases?",
+      "resourceAttributes": {
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.44.0",
+        "service.instance.id": "cc71537b-49d2-4258-8762-3010cc2cf952",
+        "service.name": "unknown_service"
+      },
+      "scope": {
+        "name": "langfuse-sdk",
+        "version": "3.2.1",
+        "attributes": {
+          "public_key": "pk-lf-aca6382d-5231-4253-b227-6a802f4db05e"
+        }
+      }
+    },
+    "tags": [
+      "claude-sonnet-4-5",
+      "lab",
+      "monitoring"
+    ],
+    "observations": [
+      {
+        "id": "713e767074a49096",
+        "name": "run",
+        "type": "GENERATION",
+        "startTime": "2026-08-11 09:58:58.848000+00:00",
+        "endTime": "2026-08-11 09:59:01.499000+00:00",
+        "latency": 2.651,
+        "model": "claude-sonnet-4-5"
+      },
+      {
+        "id": "5455f42870e1a4c6",
+        "name": "rag_retrieve",
+        "type": "SPAN",
+        "startTime": "2026-08-11 09:58:58.848000+00:00",
+        "endTime": "2026-08-11 09:59:01.348000+00:00",
+        "latency": 2.5,
+        "model": null
+      }
+    ]
+  },
+  {
+    "session_id": "k4-challenge-s05",
+    "trace_id": "53636ea160e6259182786f326635fbec",
+    "trace_url": "https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/53636ea160e6259182786f326635fbec",
+    "timestamp": "2026-08-11 09:58:47.323000+00:00",
+    "latency_seconds": 3.565,
+    "total_cost": 0.002262,
+    "metadata": {
+      "prompt_name": "day13-chat",
+      "prompt_label": "production",
+      "prompt_version": 2,
+      "prompt_source": "langfuse",
+      "correlation_id": "req-4543c0a8",
+      "doc_count": 1,
+      "query_preview": "Describe how to prove a slow span is the root cause.",
+      "resourceAttributes": {
+        "telemetry.sdk.language": "python",
+        "telemetry.sdk.name": "opentelemetry",
+        "telemetry.sdk.version": "1.44.0",
+        "service.instance.id": "cc71537b-49d2-4258-8762-3010cc2cf952",
+        "service.name": "unknown_service"
+      },
+      "scope": {
+        "name": "langfuse-sdk",
+        "version": "3.2.1",
+        "attributes": {
+          "public_key": "pk-lf-aca6382d-5231-4253-b227-6a802f4db05e"
+        }
+      }
+    },
+    "tags": [
+      "claude-sonnet-4-5",
+      "lab",
+      "monitoring"
+    ],
+    "observations": [
+      {
+        "id": "ed18711f0e1eb90f",
+        "name": "rag_retrieve",
+        "type": "SPAN",
+        "startTime": "2026-08-11 09:58:47.324000+00:00",
+        "endTime": "2026-08-11 09:58:49.824000+00:00",
+        "latency": 2.5,
+        "model": null
+      },
+      {
+        "id": "719aa857033967aa",
+        "name": "run",
+        "type": "GENERATION",
+        "startTime": "2026-08-11 09:58:47.323000+00:00",
+        "endTime": "2026-08-11 09:58:50.888000+00:00",
+        "latency": 3.565,
+        "model": "claude-sonnet-4-5"
+      }
+    ]
+  }
+]

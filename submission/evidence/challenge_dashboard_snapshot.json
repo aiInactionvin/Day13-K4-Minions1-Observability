@@ -1,11 +1,11 @@
 {
   "meta": {
     "title": "Day 13 AI Observability",
-    "generated_at": "2026-08-11T09:48:02.500885Z",
+    "generated_at": "2026-08-11T10:03:01.478406Z",
     "time_range_minutes": 60,
     "refresh_seconds": 30,
     "source": "/home/hung8uandj/Study/AI_VIN/Lab/Day13-K4-Minions1-Observability/data/logs.jsonl",
-    "records_in_window": 40,
+    "records_in_window": 56,
     "skipped_lines": 0
   },
   "panels": {
@@ -13,11 +13,11 @@
       "title": "Latency percentiles",
       "unit": "ms",
       "values": {
-        "p50": 150.0,
+        "p50": 1043.0,
         "p95": 2650.0,
-        "p99": 2650.0
+        "p99": 3563.0
       },
-      "sample_count": 15,
+      "sample_count": 20,
       "threshold": {
         "aggregation": "p95",
         "operator": "lte",
@@ -28,14 +28,14 @@
     "traffic": {
       "title": "Request traffic",
       "unit": "requests_per_minute",
-      "count": 15,
-      "rate_per_minute": 15.0,
+      "count": 20,
+      "rate_per_minute": 0.0,
       "threshold": {
         "aggregation": "rate_per_minute",
         "operator": "gte",
         "value": 1
       },
-      "status": "healthy"
+      "status": "violated"
     },
     "errors": {
       "title": "Error rate and breakdown",
@@ -53,7 +53,7 @@
     "cost": {
       "title": "Cost over time",
       "unit": "usd",
-      "total": 0.03405,
+      "total": 0.045756,
       "threshold": {
         "aggregation": "total",
         "operator": "lte",
@@ -64,8 +64,8 @@
     "tokens": {
       "title": "Input and output tokens",
       "unit": "tokens",
-      "tokens_in": 630,
-      "tokens_out": 2144,
+      "tokens_in": 847,
+      "tokens_out": 2881,
       "threshold": {
         "aggregation": "sum_by_field",
         "operator": "lte",
@@ -76,8 +76,8 @@
     "quality": {
       "title": "Quality proxy",
       "unit": "score_0_to_1",
-      "mean": 0.8667,
-      "sample_count": 15,
+      "mean": 0.86,
+      "sample_count": 20,
       "threshold": {
         "aggregation": "mean",
         "operator": "gte",
@@ -92,9 +92,31 @@
       "traffic": 15,
       "cost_usd": 0.03405,
       "errors": 0
+    },
+    {
+      "minute": "2026-08-11T09:58:00Z",
+      "traffic": 5,
+      "cost_usd": 0.008874,
+      "errors": 0
+    },
+    {
+      "minute": "2026-08-11T09:59:00Z",
+      "traffic": 0,
+      "cost_usd": 0.002832,
+      "errors": 0
     }
   ],
   "slow_requests": [
+    {
+      "ts": "2026-08-11T09:58:50.888328Z",
+      "correlation_id": "req-4543c0a8",
+      "session_id": "k4-challenge-s05",
+      "feature": "monitoring",
+      "model": "claude-sonnet-4-5",
+      "latency_ms": 3563.0,
+      "cost_usd": 0.002262,
+      "quality_score": 0.8
+    },
     {
       "ts": "2026-08-11T09:46:48.881025Z",
       "correlation_id": "req-6a38eb35",
@@ -146,53 +168,43 @@
       "quality_score": 0.9
     },
     {
-      "ts": "2026-08-11T09:46:15.637020Z",
-      "correlation_id": "req-15819334",
-      "session_id": "s03",
-      "feature": "summary",
+      "ts": "2026-08-11T09:58:53.540717Z",
+      "correlation_id": "req-42bb5092",
+      "session_id": "k4-challenge-s01",
+      "feature": "monitoring",
       "model": "claude-sonnet-4-5",
-      "latency_ms": 1043.0,
-      "cost_usd": 0.002706,
+      "latency_ms": 2650.0,
+      "cost_usd": 0.002364,
       "quality_score": 0.8
     },
     {
-      "ts": "2026-08-11T09:46:15.789064Z",
-      "correlation_id": "req-de667395",
-      "session_id": "s01",
-      "feature": "qa",
+      "ts": "2026-08-11T09:58:56.193112Z",
+      "correlation_id": "req-d999af47",
+      "session_id": "k4-challenge-s02",
+      "feature": "monitoring",
       "model": "claude-sonnet-4-5",
-      "latency_ms": 150.0,
-      "cost_usd": 0.00219,
+      "latency_ms": 2650.0,
+      "cost_usd": 0.002139,
       "quality_score": 0.9
     },
     {
-      "ts": "2026-08-11T09:46:15.941660Z",
-      "correlation_id": "req-c2f59bbc",
-      "session_id": "s02",
-      "feature": "qa",
+      "ts": "2026-08-11T09:58:58.846203Z",
+      "correlation_id": "req-db359a5e",
+      "session_id": "k4-challenge-s03",
+      "feature": "monitoring",
       "model": "claude-sonnet-4-5",
-      "latency_ms": 150.0,
-      "cost_usd": 0.002658,
+      "latency_ms": 2650.0,
+      "cost_usd": 0.002109,
       "quality_score": 0.8
     },
     {
-      "ts": "2026-08-11T09:46:16.093529Z",
-      "correlation_id": "req-73b9787a",
-      "session_id": "s04",
-      "feature": "qa",
+      "ts": "2026-08-11T09:59:01.499755Z",
+      "correlation_id": "req-076fe46d",
+      "session_id": "k4-challenge-s04",
+      "feature": "monitoring",
       "model": "claude-sonnet-4-5",
-      "latency_ms": 150.0,
-      "cost_usd": 0.002799,
-      "quality_score": 0.9
-    },
-    {
-      "ts": "2026-08-11T09:46:16.245379Z",
-      "correlation_id": "req-5233389c",
-      "session_id": "s05",
-      "feature": "qa",
-      "model": "claude-sonnet-4-5",
-      "latency_ms": 150.0,
-      "cost_usd": 0.001878,
+      "latency_ms": 2650.0,
+      "cost_usd": 0.002832,
       "quality_score": 0.9
     }
   ]
