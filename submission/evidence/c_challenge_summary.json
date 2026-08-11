@@ -1,0 +1,41 @@
+{
+  "challenge_id": "day13-k4-observability-v1",
+  "cohort": "K4",
+  "incident": "rag_slow",
+  "requests": 5,
+  "concurrency": 5,
+  "client_latency_ms": [
+    3558.0,
+    6216.6,
+    8878.0,
+    11536.6,
+    14201.4
+  ],
+  "dashboard_metrics": {
+    "p50_latency_ms": 2658.0,
+    "p95_latency_ms": 3528.0,
+    "p99_latency_ms": 3528.0,
+    "latency_slo_ms": 3000.0,
+    "latency_slo_status": "breached",
+    "request_count": 5,
+    "error_rate_pct": 0.0,
+    "cost_usd": 0.011271,
+    "tokens_in": 217,
+    "tokens_out": 708,
+    "quality_mean": 0.84
+  },
+  "investigation": {
+    "correlation_id": "req-6bc65580",
+    "session_id": "k4-challenge-s05",
+    "request_latency_ms": 3528,
+    "trace_id": "56a07306a7bd3b060a06b045b9cb3b14",
+    "trace_latency_seconds": 3.528,
+    "root_cause_span": "rag_retrieve",
+    "root_cause_span_id": "360f24664a88bbe0",
+    "root_cause_span_latency_seconds": 2.504,
+    "trace_time_share_pct": 70.98,
+    "root_cause": "The injected rag_slow incident adds a blocking 2.5-second sleep inside retrieval. Under concurrency this synchronous work also serializes requests on the event loop."
+  },
+  "fix_action": "Disable the incident and remove the artificial blocking delay; production retrieval should use non-blocking I/O with a bounded timeout.",
+  "preventive_measure": "Keep the rag_retrieve child span, alert on tail latency, add timeout/fallback behavior, and run a concurrent latency regression test before release."
+}

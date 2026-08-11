@@ -1,0 +1,16 @@
+{
+  "service": "api",
+  "event": "response_sent",
+  "level": "info",
+  "ts": "2026-08-11T09:43:35.477693Z",
+  "correlation_id": "req-6bc65580",
+  "session_id": "k4-challenge-s05",
+  "feature": "monitoring",
+  "model": "claude-sonnet-4-5",
+  "latency_ms": 3528,
+  "tokens_in": 44,
+  "tokens_out": 144,
+  "cost_usd": 0.002292,
+  "quality_score": 0.8,
+  "note": "Selected structured log fields only; raw PII and payload content are excluded."
+}

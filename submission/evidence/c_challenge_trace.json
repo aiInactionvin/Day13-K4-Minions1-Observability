@@ -1,0 +1,34 @@
+{
+  "correlation_id": "req-6bc65580",
+  "session_id": "k4-challenge-s05",
+  "trace": {
+    "id": "56a07306a7bd3b060a06b045b9cb3b14",
+    "name": "run",
+    "timestamp": "2026-08-11T09:43:31.948000Z",
+    "latency_seconds": 3.528,
+    "total_cost_usd": 0.002292,
+    "observations": [
+      {
+        "id": "af86059ab4a35d68",
+        "type": "GENERATION",
+        "name": "run",
+        "latency_seconds": 3.528,
+        "metadata": {
+          "correlation_id": "req-6bc65580",
+          "prompt_name": "day13-chat",
+          "prompt_label": "production",
+          "prompt_version": 2,
+          "prompt_source": "langfuse"
+        }
+      },
+      {
+        "id": "360f24664a88bbe0",
+        "parent_observation_id": "af86059ab4a35d68",
+        "type": "SPAN",
+        "name": "rag_retrieve",
+        "latency_seconds": 2.504
+      }
+    ]
+  },
+  "note": "Evidence is intentionally filtered to exclude credentials and raw user input/output."
+}

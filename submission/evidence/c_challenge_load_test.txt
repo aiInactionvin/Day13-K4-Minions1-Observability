@@ -1,0 +1,8 @@
+Challenge: day13-k4-observability-v1 | Cohort: K4
+[200] req-6bc65580 | monitoring | 3558.0ms
+[200] req-020238db | monitoring | 6216.6ms
+[200] req-20730be8 | monitoring | 8878.0ms
+[200] req-7bfccd07 | monitoring | 11536.6ms
+[200] req-d26a51d1 | monitoring | 14201.4ms
+
+Interpretation: all requests succeeded, but client-visible tail latency increased under concurrency. The application logs and Langfuse trace isolate rag_retrieve as the slow span.
