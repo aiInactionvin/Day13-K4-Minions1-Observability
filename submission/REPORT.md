@@ -6,9 +6,9 @@
 - Repository URL: https://github.com/aiInactionvin/Day13-K4-Minions1-Observability.git
 - Commit SHA cuối: điền bằng `git rev-parse HEAD` sau commit nộp cuối.
 - Thành viên và vai trò:
-  - Role A / Tech Lead Backend: logging middleware, correlation ID, enrichment logs, PII redaction.
-  - Role B / SRE Alerts: Langfuse prompt versioning, SLO, alert rules, runbook.
-  - Role C / QA Chief Investigator: dashboard runtime, load test, challenge investigation, report evidence.
+  - Hoàng Duy Hưng / Tech Lead Backend: logging middleware, correlation ID, enrichment logs, PII redaction.
+  - Sẻ Thế Hưng / SRE Alerts: Langfuse prompt versioning, SLO, alert rules, runbook.
+  - Đặng Hữu Khanh / QA Chief Investigator: dashboard runtime, load test, challenge investigation, report evidence.
 
 ## 2. Kết quả kỹ thuật
 
