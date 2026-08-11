@@ -3,6 +3,8 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass
 
+from structlog.contextvars import get_contextvars
+
 from . import metrics
 from .mock_llm import FakeLLM
 from .mock_rag import retrieve
@@ -29,7 +31,7 @@ class LabAgent:
     @observe(as_type="generation", capture_input=False, capture_output=False)
     def run(self, user_id: str, feature: str, session_id: str, message: str) -> AgentResult:
         started = time.perf_counter()
-        docs = retrieve(message)
+        docs = self._retrieve_docs(message)
         langfuse_client = get_langfuse_client()
         prompt = resolve_prompt(
             langfuse_client,
@@ -48,6 +50,9 @@ class LabAgent:
             session_id=session_id,
             tags=["lab", feature, self.model],
             metadata={
+                "correlation_id": get_contextvars().get("correlation_id"),
+                "feature": feature,
+                "model": self.model,
                 "prompt_name": prompt.name,
                 "prompt_label": prompt.label,
                 "prompt_version": prompt.version,
@@ -89,6 +94,10 @@ class LabAgent:
             cost_usd=cost_usd,
             quality_score=quality_score,
         )
+
+    @observe(name="rag_retrieve", capture_input=False, capture_output=False)
+    def _retrieve_docs(self, message: str) -> list[str]:
+        return retrieve(message)
 
     def _estimate_cost(self, tokens_in: int, tokens_out: int) -> float:
         input_cost = (tokens_in / 1_000_000) * 3
