@@ -54,15 +54,17 @@ Log cũng được enrich với `user_id_hash`, `session_id`, `feature`, `model`
 
 Khi có incident, nhóm không đọc log thô ngay. Chúng ta nhìn dashboard trước.
 
-Panel đầu tiên là latency percentiles. P50 cho biết request bình thường, P95/P99 cho biết tail latency. Trong challenge, baseline P95 là khoảng `1043ms`, còn challenge P95 tăng lên `3563ms` ở batch export Langfuse mới nhất.
+Panel đầu tiên là latency percentiles. P50 cho biết request bình thường, P95/P99 cho biết tail latency. Trong lượt chạy thực tế vừa xong:
+- **Baseline Latency P95**: `~155ms` (Hệ thống chạy bình thường, phản hồi nhanh).
+- **Challenge Latency P95**: Tăng vọt lên `~2660ms` ngay sau khi kích hoạt kịch bản `rag_slow`.
 
-Tiếp theo nhìn error rate. Error rate vẫn là `0%`, nghĩa là hệ thống không crash. Đây là kiểu lỗi nguy hiểm của AI system: user vẫn nhận response, nhưng chậm hơn nhiều.
+Tiếp theo nhìn error rate. Error rate vẫn là `0%`, nghĩa là hệ thống không crash. Đây là kiểu lỗi nguy hiểm của AI system: user vẫn nhận response `200 OK`, nhưng chậm hơn gấp hơn 17 lần.
 
-Sau đó nhìn cost, token và quality. Cost trung bình khoảng `$0.002/request`, quality trung bình khoảng `0.84`, không có spike rõ. Vì vậy giả thuyết ban đầu là không phải model sinh output quá dài, không phải lỗi API, mà là một bước trong pipeline bị chậm.
+Sau đó nhìn cost, token và quality. Cost trung bình khoảng `$0.0018 - $0.0025/request`, quality trung bình đạt `0.8 - 0.9`, không có spike rõ. Vì vậy giả thuyết ban đầu là không phải model sinh output quá dài, không phải lỗi API 500, mà là một bước trong pipeline bị chậm.
 
 ## 3. Thiết lập Kịch bản Challenge chính thức
 
-Kịch bản Challenge được thiết lập và kích hoạt thông qua luồng tự động:
+Kịch bản Challenge được thiết lập và kích hoạt tự động:
 
 ```bash
 # Bước 1: Kích hoạt sự cố challenge (chạy ngầm mô phỏng nghẽn RAG)
@@ -75,25 +77,26 @@ python scripts/load_test.py --challenge --concurrency 5
 python scripts/inject_incident.py --disable
 ```
 
-Thông số kịch bản Challenge ghi nhận:
+Thông số kịch bản Challenge ghi nhận vừa thực thi:
 
 ```text
 challenge_id = day13-k4-observability-v1
+cohort = K4
 incident = rag_slow
 affected_feature = monitoring
 ```
 
-Các request challenge có correlation ID:
+Các request challenge thực tế thu được trong lượt chạy mới nhất:
 
 ```text
-req-4543c0a8
-req-42bb5092
-req-d999af47
-req-db359a5e
-req-076fe46d
+req-dacf0d26 (session: k4-challenge-s02 | latency: 2660ms)
+req-47264123 (session: k4-challenge-s01 | latency: 2659ms)
+req-5d08285d (session: k4-challenge-s05 | latency: 2660ms)
+req-9f8e77cb (session: k4-challenge-s03 | latency: 2659ms)
+req-9c4971ce (session: k4-challenge-s04 | latency: 2660ms)
 ```
 
-Trong log, các request này đều thuộc feature `monitoring`, đều trả HTTP 200, nhưng `response_sent.latency_ms` nằm khoảng `2650ms` đến `3563ms`.
+Trong log, các request này đều thuộc feature `monitoring`, đều trả HTTP 200, nhưng `response_sent.latency_ms` nằm khoảng `2659ms` đến `2660ms`.
 
 ## 4. Cách đọc Trace và Bắt lỗi qua Langfuse
 
@@ -101,48 +104,43 @@ Khi xảy ra sự cố (chậm hoặc báo lỗi), quy trình đọc Trace và b
 
 ```text
 Dashboard báo Alert (P95 > 3000ms hoặc Error Rate > 2%)
-  └──> Lấy correlation_id từ Investigation Queue (vd: req-4543c0a8)
+  └──> Lấy correlation_id từ Investigation Queue (vd: req-47264123)
         └──> Mở Langfuse UI ➔ Lọc theo metadata correlation_id hoặc session_id
               └──> Soi Waterfall Trace ➔ Chỉ ra đúng Span thủ phạm (rag_retrieve = 2.5s)
                     └──> Tra ngược log thô data/logs.jsonl để xác nhận root cause
 ```
 
-Ví dụ chi tiết khi đọc Trace trong Challenge:
+Ví dụ chi tiết từ vết Trace vừa đẩy lên Langfuse:
 
 ```text
-session_id = k4-challenge-s05
-correlation_id = req-4543c0a8
-trace_id = 53636ea160e6259182786f326635fbec
-```
-
-Trace URL:
-
-```text
-https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/53636ea160e6259182786f326635fbec
+session_id = k4-challenge-s01
+correlation_id = req-47264123
+feature = monitoring
+user_id_hash = f00ba60b3772
+model = claude-sonnet-4-5
 ```
 
 **Kỹ thuật phân tích Waterfall Trace trên Langfuse:**
 
-1. **Nhìn Span Tổng (`run`):** Thời gian xử lý tổng cộng là `~3.565s`.
+1. **Nhìn Span Tổng (`run`):** Thời gian xử lý tổng cộng là `~2.659s`.
 2. **Soi các Span Con (`rag_retrieve` vs `llm_generate`):**
    - Span **`rag_retrieve`**: Chiếm `2.500s` (Tô màu cam/dài bất thường).
-   - Span **`llm_generate`**: Chỉ chiếm `0.150s` (Rất nhanh).
+   - Span **`llm_generate`**: Chỉ chiếm `0.159s` (Rất nhanh).
 3. **Bắt lỗi khi xảy ra Exception (Tool / API Fail):**
    - Nếu xảy ra lỗi HTTP 500 (ví dụ scenario `tool_fail`), Span bị lỗi trên Langfuse sẽ đổi sang màu **ĐỎ (Status: ERROR)**.
    - Nhấp trực tiếp vào Span màu đỏ để đọc **Exception Stack Trace**, thông điệp lỗi chi tiết và mã `error_type`.
-
 
 ## 5. Nối trace về log bằng correlation ID
 
 Sau khi biết span `rag_retrieve` chậm, nhóm quay lại log để chứng minh request cụ thể.
 
-Ví dụ log line của `req-4543c0a8` có:
+Ví dụ log line của `req-47264123` có:
 
 ```text
 event = response_sent
-session_id = k4-challenge-s05
+session_id = k4-challenge-s01
 feature = monitoring
-latency_ms = 3563
+latency_ms = 2659
 error_type = none
 quality_score = 0.8
 ```
@@ -151,7 +149,8 @@ quality_score = 0.8
 
 1. Request thật sự là request challenge.
 2. Request không fail, vì có `response_sent`.
-3. Latency cao khớp với trace waterfall.
+3. Latency cao (2659ms) khớp chính xác với trace waterfall trên Langfuse UI.
+
 
 Đây là luồng Metrics -> Trace -> Logs:
 
