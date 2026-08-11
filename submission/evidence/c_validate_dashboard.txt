@@ -1,7 +1,1 @@
 HỢP LỆ: 6/6 panel có trong dashboard contract.
-
-Runtime dashboard: http://127.0.0.1:8501
-Data endpoint: http://127.0.0.1:8501/api/dashboard
-Time range: 60 minutes
-Refresh: 30 seconds
-

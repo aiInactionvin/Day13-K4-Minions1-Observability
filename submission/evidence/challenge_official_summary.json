@@ -1,0 +1,139 @@
+{
+  "challenge_id": "day13-k4-observability-v1",
+  "incident": "rag_slow",
+  "affected_feature": "monitoring",
+  "baseline": {
+    "request_count": 10,
+    "latencies_ms": [
+      1043,
+      150,
+      150,
+      150,
+      150,
+      150,
+      150,
+      150,
+      150,
+      150
+    ],
+    "p50_ms": 150,
+    "p95_ms": 1043,
+    "error_rate_pct": 0.0,
+    "avg_cost_usd": 0.002398,
+    "avg_quality_score": 0.88
+  },
+  "challenge": {
+    "request_count": 5,
+    "latencies_ms": [
+      2650,
+      2650,
+      2650,
+      2650,
+      2650
+    ],
+    "p50_ms": 2650,
+    "p95_ms": 2650,
+    "error_rate_pct": 0.0,
+    "avg_cost_usd": 0.002014,
+    "avg_quality_score": 0.84
+  },
+  "slowest_requests": [
+    {
+      "correlation_id": "req-6a38eb35",
+      "session_id": "k4-challenge-s02",
+      "feature": "monitoring",
+      "latency_ms": 2650,
+      "tokens_in": 43,
+      "tokens_out": 114,
+      "cost_usd": 0.001839,
+      "quality_score": 0.9,
+      "ts": "2026-08-11T09:46:48.881025Z"
+    },
+    {
+      "correlation_id": "req-2514c703",
+      "session_id": "k4-challenge-s01",
+      "feature": "monitoring",
+      "latency_ms": 2650,
+      "tokens_in": 43,
+      "tokens_out": 151,
+      "cost_usd": 0.002394,
+      "quality_score": 0.8,
+      "ts": "2026-08-11T09:46:51.533361Z"
+    },
+    {
+      "correlation_id": "req-b7be57c6",
+      "session_id": "k4-challenge-s05",
+      "feature": "monitoring",
+      "latency_ms": 2650,
+      "tokens_in": 44,
+      "tokens_out": 153,
+      "cost_usd": 0.002427,
+      "quality_score": 0.8,
+      "ts": "2026-08-11T09:46:54.185525Z"
+    },
+    {
+      "correlation_id": "req-7a9d31e0",
+      "session_id": "k4-challenge-s03",
+      "feature": "monitoring",
+      "latency_ms": 2650,
+      "tokens_in": 43,
+      "tokens_out": 87,
+      "cost_usd": 0.001434,
+      "quality_score": 0.8,
+      "ts": "2026-08-11T09:46:56.837910Z"
+    },
+    {
+      "correlation_id": "req-59ceef29",
+      "session_id": "k4-challenge-s04",
+      "feature": "monitoring",
+      "latency_ms": 2650,
+      "tokens_in": 44,
+      "tokens_out": 123,
+      "cost_usd": 0.001977,
+      "quality_score": 0.9,
+      "ts": "2026-08-11T09:46:59.490415Z"
+    }
+  ],
+  "request_log_evidence": [
+    {
+      "correlation_id": "req-6a38eb35",
+      "event": "request_received",
+      "feature": "monitoring",
+      "session_id": "k4-challenge-s02",
+      "message_preview": "How should an engineer investigate tail latency?",
+      "ts": "2026-08-11T09:46:46.229030Z"
+    },
+    {
+      "correlation_id": "req-2514c703",
+      "event": "request_received",
+      "feature": "monitoring",
+      "session_id": "k4-challenge-s01",
+      "message_preview": "Explain why metrics traces and logs work together.",
+      "ts": "2026-08-11T09:46:48.882288Z"
+    },
+    {
+      "correlation_id": "req-b7be57c6",
+      "event": "request_received",
+      "feature": "monitoring",
+      "session_id": "k4-challenge-s05",
+      "message_preview": "Describe how to prove a slow span is the root cause.",
+      "ts": "2026-08-11T09:46:51.534089Z"
+    },
+    {
+      "correlation_id": "req-7a9d31e0",
+      "event": "request_received",
+      "feature": "monitoring",
+      "session_id": "k4-challenge-s03",
+      "message_preview": "Summarize the observability workflow for an AI API.",
+      "ts": "2026-08-11T09:46:54.186564Z"
+    },
+    {
+      "correlation_id": "req-59ceef29",
+      "event": "request_received",
+      "feature": "monitoring",
+      "session_id": "k4-challenge-s04",
+      "message_preview": "Which signal should be checked after latency increases?",
+      "ts": "2026-08-11T09:46:56.838989Z"
+    }
+  ]
+}

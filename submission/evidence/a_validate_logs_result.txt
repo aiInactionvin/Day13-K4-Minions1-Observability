@@ -1,8 +1,8 @@
 --- Lab Verification Results ---
-Total log records analyzed: 14
+Total log records analyzed: 74
 Records with missing required fields: 0
 Records with missing enrichment (context): 0
-Unique correlation IDs found: 6
+Unique correlation IDs found: 33
 Potential PII leaks detected: 0
 
 --- Grading Scorecard (Estimates) ---
