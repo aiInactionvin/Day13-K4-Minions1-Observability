@@ -14,7 +14,41 @@ Log cũng được enrich với `user_id_hash`, `session_id`, `feature`, `model`
 
 Ở tầng tracing, nhóm dùng Langfuse. Trace có metadata prompt version, prompt label, session ID, user hash và correlation ID. Nhóm cũng thêm span riêng `rag_retrieve`, để khi retrieval chậm thì waterfall không chỉ hiện agent chậm chung chung mà chỉ rõ bước retrieval đang chiếm thời gian.
 
-Ở tầng dashboard, nhóm dựng 6 panel đúng contract: latency percentiles, traffic, error rate, cost, tokens và quality proxy. Dashboard còn có investigation queue để lấy những request chậm nhất cùng correlation ID.
+Ở tầng dashboard, nhóm dựng 6 panel đúng contract theo `config/dashboard.yaml` và `dashboard/analytics.py`. Cụ thể thiết kế và công thức tính toán cho từng panel như sau:
+
+1. **Panel 1: Latency Percentiles (P50, P90, P95, P99)**:
+   - **Mục đích**: Giám sát độ trễ phản hồi của hệ thống, phân biệt giữa request bình thường và các request bị chậm ở đuôi (tail latency).
+   - **Công thức**: Lọc tất cả log `event == "response_sent"`, lấy danh sách `latency_ms` sắp xếp tăng dần:
+     $$\text{P50} = \text{percentile}(latency\_ms, 50) \quad (\text{Mức trung bình})$$
+     $$\text{P95} = \text{percentile}(latency\_ms, 95) \quad (\text{SLO Threshold: } \le 3000\text{ms})$$
+     $$\text{P99} = \text{percentile}(latency\_ms, 99) \quad (\text{Tail latency tối đa})$$
+
+2. **Panel 2: Traffic (Request Volume & RPS)**:
+   - **Mục đích**: Đo lưu lượng người dùng truy cập theo thời gian real-time.
+   - **Công thức**:
+     $$\text{Total Requests} = \text{count}(event == \text{"request\_received"})$$
+     $$\text{RPS (Request Per Second)} = \frac{\text{Total Requests}}{\text{Time Window (seconds)}}$$
+
+3. **Panel 3: Error Rate (%)**:
+   - **Mục đích**: Theo dõi tỷ lệ sự cố và độ sẵn sàng của ứng dụng.
+   - **Công thức**:
+     $$\text{Error Rate (\%)} = \frac{\text{count}(event == \text{"request\_failed"} \text{ OR } status\_code \ge 500)}{\text{Total Requests}} \times 100\% \quad (\text{SLO Threshold: } \le 2\%)$$
+
+4. **Panel 4: Daily Cost ($ USD)**:
+   - **Mục đích**: Kiểm soát ngân sách API chi trả cho mô hình AI LLM.
+   - **Công thức tính từng request**:
+     $$\text{cost\_usd} = \left(\frac{tokens\_in}{1,000,000} \times \$3\right) + \left(\frac{tokens\_out}{1,000,000} \times \$15\right)$$
+   - **Tổng chi phí**: $\text{Total Cost} = \sum cost\_usd \quad (\text{SLO Threshold: } \le \$2.50/\text{ngày})$
+
+5. **Panel 5: Token Consumption (Input vs Output Tokens)**:
+   - **Mục đích**: Giám sát độ dài dữ liệu đầu vào (Prompt + RAG Docs) và đầu ra (Completion Answer).
+   - **Công thức**:
+     $$\text{Avg Input Tokens} = \text{mean}(tokens\_in), \quad \text{Avg Output Tokens} = \text{mean}(tokens\_out)$$
+
+6. **Panel 6: Quality Proxy Score Distribution**:
+   - **Mục đích**: Đánh giá chất lượng câu trả lời AI và độ an toàn dữ liệu.
+   - **Công thức**: $\text{Quality Avg} = \text{mean}(quality\_score) \quad (\text{SLO Threshold: } \ge 0.75)$
+   - Điểm chất lượng được tính bằng Heuristic: khởi tạo `0.5`, `+0.2` nếu có RAG Docs, `+0.1` nếu độ dài câu trả lời $>40$, `-0.2` nếu bị rò rỉ dữ liệu hoặc dính PII Redaction.
 
 ## 2. Cách đọc dashboard trước khi vào trace
 
@@ -26,22 +60,27 @@ Tiếp theo nhìn error rate. Error rate vẫn là `0%`, nghĩa là hệ thống
 
 Sau đó nhìn cost, token và quality. Cost trung bình khoảng `$0.002/request`, quality trung bình khoảng `0.84`, không có spike rõ. Vì vậy giả thuyết ban đầu là không phải model sinh output quá dài, không phải lỗi API, mà là một bước trong pipeline bị chậm.
 
-## 3. Challenge đã chạy như thế nào
+## 3. Thiết lập Kịch bản Challenge chính thức
 
-Challenge chính thức là:
+Kịch bản Challenge được thiết lập và kích hoạt thông qua luồng tự động:
+
+```bash
+# Bước 1: Kích hoạt sự cố challenge (chạy ngầm mô phỏng nghẽn RAG)
+python scripts/inject_incident.py
+
+# Bước 2: Bơm lưu lượng test song song 5 luồng
+python scripts/load_test.py --challenge --concurrency 5
+
+# Bước 3: Tắt sự cố sau khi đã ghi nhận bằng chứng
+python scripts/inject_incident.py --disable
+```
+
+Thông số kịch bản Challenge ghi nhận:
 
 ```text
 challenge_id = day13-k4-observability-v1
 incident = rag_slow
 affected_feature = monitoring
-```
-
-Nhóm chạy:
-
-```bash
-python scripts/inject_incident.py
-python scripts/load_test.py --challenge --concurrency 5
-python scripts/inject_incident.py --disable
 ```
 
 Các request challenge có correlation ID:
@@ -56,11 +95,19 @@ req-076fe46d
 
 Trong log, các request này đều thuộc feature `monitoring`, đều trả HTTP 200, nhưng `response_sent.latency_ms` nằm khoảng `2650ms` đến `3563ms`.
 
-## 4. Cách bắt lỗi qua Langfuse
+## 4. Cách đọc Trace và Bắt lỗi qua Langfuse
 
-Sau khi có correlation ID từ dashboard, nhóm mở Langfuse và lọc theo session hoặc trace metadata.
+Khi xảy ra sự cố (chậm hoặc báo lỗi), quy trình đọc Trace và bắt lỗi qua Langfuse được thực hiện theo 4 bước chuẩn SRE:
 
-Ví dụ:
+```text
+Dashboard báo Alert (P95 > 3000ms hoặc Error Rate > 2%)
+  └──> Lấy correlation_id từ Investigation Queue (vd: req-4543c0a8)
+        └──> Mở Langfuse UI ➔ Lọc theo metadata correlation_id hoặc session_id
+              └──> Soi Waterfall Trace ➔ Chỉ ra đúng Span thủ phạm (rag_retrieve = 2.5s)
+                    └──> Tra ngược log thô data/logs.jsonl để xác nhận root cause
+```
+
+Ví dụ chi tiết khi đọc Trace trong Challenge:
 
 ```text
 session_id = k4-challenge-s05
@@ -74,24 +121,16 @@ Trace URL:
 https://us.cloud.langfuse.com/project/cmsocay5s00ilad0d966g488c/traces/53636ea160e6259182786f326635fbec
 ```
 
-Khi mở waterfall, ta đọc từ span cha xuống span con:
+**Kỹ thuật phân tích Waterfall Trace trên Langfuse:**
 
-```text
-run              ~3.565s
-rag_retrieve     2.5s
-```
+1. **Nhìn Span Tổng (`run`):** Thời gian xử lý tổng cộng là `~3.565s`.
+2. **Soi các Span Con (`rag_retrieve` vs `llm_generate`):**
+   - Span **`rag_retrieve`**: Chiếm `2.500s` (Tô màu cam/dài bất thường).
+   - Span **`llm_generate`**: Chỉ chiếm `0.150s` (Rất nhanh).
+3. **Bắt lỗi khi xảy ra Exception (Tool / API Fail):**
+   - Nếu xảy ra lỗi HTTP 500 (ví dụ scenario `tool_fail`), Span bị lỗi trên Langfuse sẽ đổi sang màu **ĐỎ (Status: ERROR)**.
+   - Nhấp trực tiếp vào Span màu đỏ để đọc **Exception Stack Trace**, thông điệp lỗi chi tiết và mã `error_type`.
 
-Như vậy phần lớn latency nằm ở `rag_retrieve`. Đây là bằng chứng trực tiếp hơn việc chỉ nhìn tổng latency. Một trace khác:
-
-```text
-session_id = k4-challenge-s02
-correlation_id = req-d999af47
-trace_id = a0aa2d523a3f7ab539b966b0eb8bc51e
-run latency = 2.651s
-rag_retrieve latency = 2.501s
-```
-
-Kết luận từ trace: bottleneck nằm ở retrieval/RAG, không phải LLM generation.
 
 ## 5. Nối trace về log bằng correlation ID
 
